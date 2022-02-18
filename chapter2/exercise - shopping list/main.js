@@ -28,3 +28,9 @@ function addList(value) {
     </button>`
   $items.appendChild(newLi)
 }
+
+$items.addEventListener('click', (e) => {
+  if (!e.target.dataset.icon) return
+  const li = e.target.parentNode.parentNode
+  $items.removeChild(li)
+})
