@@ -51,10 +51,10 @@ body {
 }
 
 .item {
+  display: flex;
+  justify-content: space-between;
 }
 
-.item-description {
-}
 .delete-btn {
   width: var(--button-size);
   height: var(--button-size);

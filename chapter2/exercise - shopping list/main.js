@@ -7,7 +7,7 @@ const $addBtn = document.querySelector('.add-btn')
 $input.addEventListener('keypress', (e) => {
   if (!e.target.value) return
   if (e.key === 'Enter') {
-    addList(esd.target.value)
+    addList(e.target.value)
     e.target.value = ''
   }
 })
