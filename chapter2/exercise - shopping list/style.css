@@ -5,6 +5,7 @@
   --color-light-gray: #dce1ec;
   --color-backround: #474f64;
   --color-gradient: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+
   /* spacing */
   --base-space: 8px;
   --base-line-height: 2;
@@ -35,12 +36,14 @@ body {
   flex-direction: column;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
+
 .header {
   text-align: center;
   background: var(--color-gradient);
   font-size: var(--title-font-size);
   padding: calc(var(--base-space) * 2);
 }
+
 .items {
   overflow-y: scroll;
   flex: 1;
@@ -55,7 +58,7 @@ body {
   justify-content: space-between;
 }
 
-.delete-btn {
+.item__delete-btn {
   width: var(--button-size);
   height: var(--button-size);
   background-color: transparent;
@@ -63,21 +66,25 @@ body {
   cursor: pointer;
 }
 
-.input {
+.item__delete-btn:hover {
+  color: var(--color-primary);
+}
+
+.footer__input {
   border: transparent;
   line-height: var(--base-line-height);
   font-size: var(--font-size);
-}
-
-.input:focus-visible {
-  outline: transparent;
+  padding: 0 var(--base-space);
+  outline: none;
 }
 
 .footer {
   background: var(--color-gradient);
+  display: flex;
+  flex-direction: column;
 }
 
-.add-btn {
+.footer__add-btn {
   background-color: var(--color-light-gray);
   width: var(--button-size);
   height: var(--button-size);
@@ -90,6 +97,7 @@ body {
   box-shadow: rgba(80, 85, 90, 0.1) 3px 3px 6px 0px, rgba(112, 123, 131, 0.1) -3px -3px 6px 1px;
 }
 
-.add-btn:active {
+.footer__add-btn:active,
+.footer__add-btn:hover {
   box-shadow: rgb(169, 184, 197) 3px 3px 6px 0px inset, rgba(202, 215, 230, 0.5) -3px -3px 6px 1px inset;
 }

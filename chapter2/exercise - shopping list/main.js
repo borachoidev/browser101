@@ -1,36 +1,47 @@
 'use strict'
 
-const $input = document.querySelector('.input')
 const $items = document.querySelector('.items')
-const $addBtn = document.querySelector('.add-btn')
+const $input = document.querySelector('.footer__input')
+const $addBtn = document.querySelector('.footer__add-btn')
 
-$input.addEventListener('keypress', (e) => {
-  if (!e.target.value) return
-  if (e.key === 'Enter') {
-    addList(e.target.value)
-    e.target.value = ''
+function onAdd() {
+  const text = $input.value
+  if (text === '') {
+    $input.focus()
+    return
   }
-})
-
-$addBtn.addEventListener('click', (e) => {
-  if (!$input.value) return
-  addList($input.value)
+  const item = createItem(text)
+  $items.appendChild(item)
+  item.scrollIntoView({ block: 'center' })
   $input.value = ''
-})
-
-function addList(value) {
-  const newLi = document.createElement('li')
-  newLi.className = 'item'
-  newLi.innerHTML = `  
-    <span calss="item-description">${value}</span>
-    <button class="delete-btn">
-      <i class="fa fa-solid fa-trash " data-icon="trash"></i>
-    </button>`
-  $items.appendChild(newLi)
+  $input.focus()
 }
 
-$items.addEventListener('click', (e) => {
-  if (!e.target.dataset.icon) return
-  const li = e.target.parentNode.parentNode
-  $items.removeChild(li)
+function createItem(text) {
+  const newLi = document.createElement('li')
+  newLi.className = 'item'
+
+  const span = document.createElement('span')
+  span.textContent = text
+
+  const deleteBtn = document.createElement('button')
+  deleteBtn.className = 'item__delete-btn'
+  deleteBtn.innerHTML = ` <i class="fa fa-solid fa-trash " data-icon="trash"></i>`
+
+  deleteBtn.addEventListener('click', () => {
+    $items.removeChild(newLi)
+  })
+  newLi.appendChild(span)
+  newLi.appendChild(deleteBtn)
+
+  return newLi
+}
+
+$addBtn.addEventListener('click', (e) => {
+  onAdd()
+})
+
+$input.addEventListener('keypress', (e) => {
+  if (e.key !== 'Enter') return
+  onAdd()
 })
