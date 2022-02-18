@@ -1,0 +1,95 @@
+:root {
+  /* color */
+  --color-primary: #ee9ba9;
+  --color-secondary: #a2baed;
+  --color-light-gray: #dce1ec;
+  --color-backround: #474f64;
+  --color-gradient: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  /* spacing */
+  --base-space: 8px;
+  --base-line-height: 2;
+
+  /* size */
+  --font-size: 18px;
+  --title-font-size: 24px;
+  --border-radius-size: 16px;
+  --button-size: 40px;
+}
+
+body {
+  display: flex;
+  margin: 0px;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--color-backround);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.container {
+  width: 320px;
+  height: 640px;
+  border-radius: var(--border-radius-size);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+.header {
+  text-align: center;
+  background: var(--color-gradient);
+  font-size: var(--title-font-size);
+  padding: calc(var(--base-space) * 2);
+}
+.items {
+  overflow-y: scroll;
+  flex: 1;
+  margin: 0;
+  padding: calc(var(--base-space) * 2);
+  background-color: var(--color-light-gray);
+  list-style: none;
+}
+
+.item {
+}
+
+.item-description {
+}
+.delete-btn {
+  width: var(--button-size);
+  height: var(--button-size);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.input {
+  border: transparent;
+  line-height: var(--base-line-height);
+  font-size: var(--font-size);
+}
+
+.input:focus-visible {
+  outline: transparent;
+}
+
+.footer {
+  background: var(--color-gradient);
+}
+
+.add-btn {
+  background-color: var(--color-light-gray);
+  width: var(--button-size);
+  height: var(--button-size);
+  border-radius: 100%;
+  border: transparent;
+  margin: var(--base-space) auto;
+  display: block;
+  cursor: pointer;
+  transition: 0.3s ease;
+  box-shadow: rgba(80, 85, 90, 0.1) 3px 3px 6px 0px, rgba(112, 123, 131, 0.1) -3px -3px 6px 1px;
+}
+
+.add-btn:active {
+  box-shadow: rgb(169, 184, 197) 3px 3px 6px 0px inset, rgba(202, 215, 230, 0.5) -3px -3px 6px 1px inset;
+}
