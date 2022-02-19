@@ -17,31 +17,36 @@ function onAdd() {
   $input.focus()
 }
 
+let id = 0
+
 function createItem(text) {
   const newLi = document.createElement('li')
-  newLi.className = 'item'
+  newLi.classList.add('item')
 
-  const span = document.createElement('span')
-  span.textContent = text
-
-  const deleteBtn = document.createElement('button')
-  deleteBtn.className = 'item__delete-btn'
-  deleteBtn.innerHTML = ` <i class="fa fa-solid fa-trash " data-icon="trash"></i>`
-
-  deleteBtn.addEventListener('click', () => {
-    $items.removeChild(newLi)
-  })
-  newLi.appendChild(span)
-  newLi.appendChild(deleteBtn)
-
+  newLi.innerHTML = `
+      <span>${text}</span>
+      <button class="item__delete-btn" data-id=${id}>
+        <i class="fa fa-solid fa-trash " data-id=${id} aria-hidden="true"></i>
+      </button>
+    `
+  newLi.dataset.id = id
+  id++
   return newLi
 }
 
-$addBtn.addEventListener('click', (e) => {
+$addBtn.addEventListener('click', (event) => {
   onAdd()
 })
 
-$input.addEventListener('keypress', (e) => {
-  if (e.key !== 'Enter') return
+$input.addEventListener('keypress', (event) => {
+  if (event.key !== 'Enter') return
   onAdd()
+})
+
+$items.addEventListener('click', (event) => {
+  const id = event.target.dataset.id
+  if (!id) return
+
+  const toBeDelete = document.querySelector(`.item[data-id="${id}"]`)
+  toBeDelete.remove()
 })
