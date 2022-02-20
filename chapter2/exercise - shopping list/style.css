@@ -76,6 +76,7 @@ body {
   font-size: var(--font-size);
   padding: 0 var(--base-space);
   outline: none;
+  width: 100%;
 }
 
 .footer {

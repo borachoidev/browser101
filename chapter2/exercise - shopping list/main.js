@@ -3,6 +3,7 @@
 const $items = document.querySelector('.items')
 const $input = document.querySelector('.footer__input')
 const $addBtn = document.querySelector('.footer__add-btn')
+const $form = document.querySelector('#form')
 
 function onAdd() {
   const text = $input.value
@@ -34,14 +35,9 @@ function createItem(text) {
   return newLi
 }
 
-$addBtn.addEventListener('click', (event) => {
+$form.addEventListener('submit', (event) => {
   onAdd()
-})
-
-$input.addEventListener('keydown', (event) => {
-  if (event.isComposing) return
-  if (event.key !== 'Enter') return
-  onAdd()
+  event.preventDefault()
 })
 
 $items.addEventListener('click', (event) => {
