@@ -40,6 +40,7 @@ body {
   cursor: pointer;
 }
 
+.game__item:hover,
 .modal__button:hover,
 .controler:hover {
   transform: scale(1.1);
@@ -101,5 +102,7 @@ body {
 .game__content {
   width: 800px;
   height: 225px;
-  background-color: rgba(0, 0, 0, 0.5);
+}
+.game__item {
+  cursor: pointer;
 }
