@@ -64,16 +64,14 @@ body {
   height: 450px;
   border-radius: 16px;
   margin: 0 auto;
-  position: relative;
 }
 
 .modal {
   background: rgba(0, 0, 0, 0.5);
   position: absolute;
-  transform: translate(270px, 50px);
+  transform: translate(280px, -225px);
   width: 270px;
   height: 120px;
-  will-change: contents;
   display: none;
   color: #fff;
   text-align: center;
@@ -81,6 +79,7 @@ body {
   font-size: 24px;
   border-radius: 8px;
   box-sizing: border-box;
+  z-index: 3;
 }
 .modal__button {
   background-color: orange;
@@ -97,4 +96,10 @@ body {
 }
 .visible {
   display: block;
+}
+
+.game__content {
+  width: 800px;
+  height: 225px;
+  background-color: rgba(0, 0, 0, 0.5);
 }
