@@ -6,21 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>당근을 뽑아라</title>
     <script src="main.js" defer></script>
+    <script src="https://kit.fontawesome.com/ddb6143b3c.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="timer">0:00</div>
-      <div class="rest">9</div>
-      <div class="controler">시작</div>
-    </header>
-    <main class="container">
-      <section class="game">
-        <div class="modal">
-          <button class="modal__button">다시하기</button>
-          <div class="modal__content">You win</div>
-        </div>
+    <section class="game">
+      <section class="information">
+        <button class="controler"><i class="fa-solid fa-play fa"></i></button>
+        <div class="timer">0:00</div>
+        <div class="rest">9</div>
       </section>
-    </main>
+      <div class="modal visible">
+        <button class="modal__button"><i class="fa fa-rotate-left fa-solid"></i></button>
+        <div class="modal__content">You win!</div>
+      </div>
+    </section>
   </body>
 </html>
