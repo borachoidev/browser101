@@ -1,136 +1,178 @@
-const $gameContainer = document.querySelector('.game__field')
-const $startBtn = document.querySelector('.game__button')
-const $timer = document.querySelector('.game__timer')
-const $rest = document.querySelector('.game__score')
-const DEFAULT_CARROT = 10
-const DEFAULT_TIME = 10
-let isStart = false
-let carrotCount = DEFAULT_CARROT
-let limit = DEFAULT_TIME
-let timer
-let interval
-const bg = new Audio('../asset/sound/bg.mp3')
-const win = new Audio('../asset/sound/game_win.mp3')
-//시작 버튼 게임 시작하기
-$startBtn.addEventListener('click', () => {
-  isStart = !isStart
-  if (!isStart) {
-    finishGame()
-    openModal('REPLAY?')
+const CARROT_SIZE = 80
+const CARROT_COUNT = 10
+const BUG_COUNT = 10
+const GAME_DURATION_SEC = 5
 
-    return
+const field = document.querySelector('.game__field')
+const fieldRect = field.getBoundingClientRect()
+
+const gameBtn = document.querySelector('.game__button')
+const gameTimer = document.querySelector('.game__timer')
+const gameScore = document.querySelector('.game__score')
+
+const modal = document.querySelector('.modal')
+const modalRefresh = document.querySelector('.modal__refresh')
+const modalText = document.querySelector('.modal__message')
+
+let started = false
+let score = 0
+let timer
+
+const carrotSound = new Audio('../asset/sound/carrot_pull.mp3')
+const bgSound = new Audio('../asset/sound/bg.mp3')
+const alertSound = new Audio('../asset/sound/alert.wav')
+const winSound = new Audio('../asset/sound/game_win.mp3')
+const bugSound = new Audio('../asset/sound/bug_pull.mp3')
+
+field.addEventListener('click', onFieldClick)
+gameBtn.addEventListener('click', () => {
+  if (started) {
+    stopGame()
+  } else {
+    startGame()
   }
+})
+modalRefresh.addEventListener('click', () => {
   startGame()
+  hidePopUp()
 })
 
 function startGame() {
-  bg.currentTime = 0
-
-  bg.volume = 0.1
-  win.pause()
-  bg.play()
-  //게임 초기화
-  $gameContainer.innerHTML = ''
-  carrotCount = DEFAULT_CARROT
-  limit = DEFAULT_TIME
-  $startBtn.innerHTML = `<i class="fa-solid fa-stop fa"></i>`
-  for (let i = 0; i < 10; i++) {
-    createItem({ img: '../asset/img/carrot.png', name: 'carrot' })
-    createItem({ img: '../asset/img/bug.png', name: 'bug' })
-  }
-  $rest.innerHTML = carrotCount
-  $timer.innerHTML = `0:${limit}`
-  startTimer(limit)
+  started = true
+  initGame()
+  showStopButton()
+  showTimerAndScore()
+  startGameTimer()
+  playSound(bgSound)
 }
 
-// 타이머 만들기
-function startTimer(time) {
-  interval = setInterval(() => {
-    $timer.innerHTML = `0:${time}`
-    timer = setTimeout(() => {
-      --time
-    }, 1000)
+function stopGame() {
+  started = false
+  stopGameTimer()
+  hideGameButton()
+  showModalWithText('replay?')
+  playSound(alertSound)
+  stopSound(bgSound)
+}
 
-    if (time < 1) {
-      finishGame()
-      openModal('YOU LOST!')
+function finishGame(win) {
+  started = false
+  hideGameButton()
+  if (win) playSound(winSound)
+  else playSound(bugSound)
+  stopGameTimer()
+  stopSound(bgSound)
+  showModalWithText(win ? 'YOU WIN' : 'YOU LOST!')
+}
+
+function showStopButton() {
+  const icon = gameBtn.querySelector('.fa')
+  icon.classList.add('fa-stop')
+  icon.classList.remove('fa-play')
+  gameBtn.style.visibility = 'visible'
+}
+
+function hideGameButton() {
+  gameBtn.style.visibility = 'hidden'
+}
+
+function showTimerAndScore() {
+  gameTimer.style.visibility = 'visible'
+  gameScore.style.visibility = 'visible'
+}
+
+function showModalWithText(text) {
+  modalText.innerText = text
+  modal.classList.remove('modal--hide')
+}
+
+function hidePopUp() {
+  modal.classList.add('modal--hide')
+}
+
+function initGame() {
+  score = 0
+  field.innerHTML = ''
+  gameScore.innerHTML = CARROT_COUNT
+  addItem('carrot', CARROT_COUNT, '../asset/img/carrot.png')
+  addItem('bug', BUG_COUNT, '../asset/img/bug.png')
+}
+
+function onFieldClick(event) {
+  if (!started) {
+    return
+  }
+
+  const target = event.target
+  if (target.matches('.carrot')) {
+    target.remove()
+    score++
+    playSound(carrotSound)
+    updateScoreBoard()
+
+    if (score === CARROT_COUNT) {
+      finishGame(true)
     }
+  } else if (target.matches('.bug')) {
+    finishGame(false)
+  }
+}
+
+function playSound(sound) {
+  sound.currentTime = 0
+  sound.play()
+}
+
+function stopSound(sound) {
+  sound.pause()
+}
+
+function updateScoreBoard() {
+  gameScore.innerHTML = CARROT_COUNT - score
+}
+
+function addItem(className, count, imgPath) {
+  const x1 = 0
+  const y1 = 0
+  const x2 = fieldRect.width - CARROT_SIZE
+  const y2 = fieldRect.height - CARROT_SIZE
+  for (let i = 0; i < count; i++) {
+    const item = document.createElement('img')
+    item.classList.add(className)
+    item.setAttribute('src', imgPath)
+    const x = randomNumber(x1, x2)
+    const y = randomNumber(y1, y2)
+    item.style.position = 'absolute'
+    item.style.left = `${x}px`
+    item.style.top = `${y}px`
+
+    field.appendChild(item)
+  }
+}
+
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min) + min)
+}
+
+function startGameTimer(time) {
+  let remainingTimeSec = GAME_DURATION_SEC
+  updateTimerText(remainingTimeSec)
+  timer = setInterval(() => {
+    if (remainingTimeSec <= 0) {
+      clearInterval(timer)
+      finishGame(CARROT_COUNT === score)
+      return
+    }
+    updateTimerText(--remainingTimeSec)
   }, 1000)
 }
 
-//컨테이너 크기 찾기
-function createItem(type) {
-  const [x, y] = getPostion()
-  const item = document.createElement('div')
-  item.style.position = 'absolute'
-  item.classList.add('game__item')
-  item.style.top = `${y}px`
-  item.style.left = `${x}px`
-  item.innerHTML = `<img src=${type.img} alt=${type.name} data-type="${type.name}" />`
-  $gameContainer.appendChild(item)
+function updateTimerText(time) {
+  const minutes = Math.floor(time / 60)
+  const seconds = time % 60
+  gameTimer.innerHTML = `${minutes}:${seconds}`
 }
 
-function getPostion() {
-  const left = $gameContainer.getBoundingClientRect().left + 25
-  const top = $gameContainer.getBoundingClientRect().top + 25
-  const right = $gameContainer.getBoundingClientRect().right - 75
-  const bottom = $gameContainer.getBoundingClientRect().bottom - 80
-
-  const x = Math.floor(Math.random() * (right - left) + left)
-  const y = Math.floor(Math.random() * (bottom - top) + top)
-  return [x, y]
-}
-
-const $modalBtn = document.querySelector('.modal__refresh')
-$modalBtn.addEventListener('click', () => {
-  const $modal = document.querySelector('.modal')
-  $modal.classList.remove('visible')
-  const audio = new Audio('../asset/sound/alert.wav')
-  audio.volume = 0.1
-  audio.play()
-  startGame()
-})
-
-$gameContainer.addEventListener('click', (event) => {
-  if (!event.target.dataset.type) {
-    return
-  }
-
-  if (event.target.dataset.type === 'bug') {
-    const audio = new Audio('../asset/sound/bug_pull.mp3')
-    audio.volume = 0.1
-    audio.play()
-    finishGame()
-    openModal('YOU LOST!')
-    return
-  }
-
-  const carrot = event.target
-  const audio = new Audio('../asset/sound/carrot_pull.mp3')
-  audio.volume = 0.1
-  audio.play()
-  carrot.remove()
-  carrotCount--
-  $rest.innerHTML = carrotCount
-  if (limit > 0 && carrotCount === 0) {
-    openModal('YOU WON!')
-    win.currentTime = 0
-    win.volume = 0.1
-    win.play()
-    finishGame()
-  }
-})
-
-function openModal(content) {
-  const $modalContent = document.querySelector('.modal__message')
-  const $modal = document.querySelector('.modal')
-  $modal.classList.add('visible')
-  $modalContent.innerText = content
-}
-
-function finishGame() {
-  bg.pause()
-  clearTimeout(timer)
-  clearInterval(interval)
-  $startBtn.innerHTML = `<i class="fa-solid fa-play fa"></i>`
+function stopGameTimer() {
+  clearInterval(timer)
 }
