@@ -1,7 +1,7 @@
-const $gameContainer = document.querySelector('.game__content')
-const $startBtn = document.querySelector('.controler')
-const $timer = document.querySelector('.timer')
-const $rest = document.querySelector('.rest')
+const $gameContainer = document.querySelector('.game__field')
+const $startBtn = document.querySelector('.game__button')
+const $timer = document.querySelector('.game__timer')
+const $rest = document.querySelector('.game__score')
 const DEFAULT_CARROT = 10
 const DEFAULT_TIME = 10
 let isStart = false
@@ -81,7 +81,7 @@ function getPostion() {
   return [x, y]
 }
 
-const $modalBtn = document.querySelector('.modal__button')
+const $modalBtn = document.querySelector('.modal__refresh')
 $modalBtn.addEventListener('click', () => {
   const $modal = document.querySelector('.modal')
   $modal.classList.remove('visible')
@@ -122,7 +122,7 @@ $gameContainer.addEventListener('click', (event) => {
 })
 
 function openModal(content) {
-  const $modalContent = document.querySelector('.modal__content')
+  const $modalContent = document.querySelector('.modal__message')
   const $modal = document.querySelector('.modal')
   $modal.classList.add('visible')
   $modalContent.innerText = content
