@@ -1,40 +1,58 @@
-const CARROT_SIZE = 80
-const CARROT_COUNT = 10
-const BUG_COUNT = 10
-const GAME_DURATION_SEC = 5
+'use strict'
+import PopUp from './popup.js'
+import Field from './field.js'
 
-const field = document.querySelector('.game__field')
-const fieldRect = field.getBoundingClientRect()
+// const CARROT_SIZE = 80
+const CARROT_COUNT = 5
+const BUG_COUNT = 5
+const GAME_DURATION_SEC = 7
 
 const gameBtn = document.querySelector('.game__button')
 const gameTimer = document.querySelector('.game__timer')
 const gameScore = document.querySelector('.game__score')
 
-const modal = document.querySelector('.modal')
-const modalRefresh = document.querySelector('.modal__refresh')
-const modalText = document.querySelector('.modal__message')
+const carrotSound = new Audio('./asset/sound/carrot_pull.mp3')
+const bgSound = new Audio('./asset/sound/bg.mp3')
+const alertSound = new Audio('./asset/sound/alert.wav')
+const winSound = new Audio('./asset/sound/game_win.mp3')
+const bugSound = new Audio('./asset/sound/bug_pull.mp3')
 
 let started = false
 let score = 0
 let timer
 
-const carrotSound = new Audio('../asset/sound/carrot_pull.mp3')
-const bgSound = new Audio('../asset/sound/bg.mp3')
-const alertSound = new Audio('../asset/sound/alert.wav')
-const winSound = new Audio('../asset/sound/game_win.mp3')
-const bugSound = new Audio('../asset/sound/bug_pull.mp3')
+const gameFinishBanner = new PopUp()
 
-field.addEventListener('click', onFieldClick)
+gameFinishBanner.setClickListener(() => {
+  startGame()
+})
+const gameField = new Field(CARROT_COUNT, BUG_COUNT)
+gameField.setClickListener(onItemClick)
+
+function onItemClick(item) {
+  console.log('ddf')
+  if (!started) {
+    return
+  }
+
+  if (item == 'carrot') {
+    score++
+    updateScoreBoard()
+
+    if (score === CARROT_COUNT) {
+      finishGame(true)
+    }
+  } else if (item == 'bug') {
+    finishGame(false)
+  }
+}
+
 gameBtn.addEventListener('click', () => {
   if (started) {
     stopGame()
   } else {
     startGame()
   }
-})
-modalRefresh.addEventListener('click', () => {
-  startGame()
-  hidePopUp()
 })
 
 function startGame() {
@@ -50,7 +68,7 @@ function stopGame() {
   started = false
   stopGameTimer()
   hideGameButton()
-  showModalWithText('replay?')
+  gameFinishBanner.showWithText('replay?')
   playSound(alertSound)
   stopSound(bgSound)
 }
@@ -62,7 +80,7 @@ function finishGame(win) {
   else playSound(bugSound)
   stopGameTimer()
   stopSound(bgSound)
-  showModalWithText(win ? 'YOU WIN' : 'YOU LOST!')
+  gameFinishBanner.showWithText(win ? 'YOU WIN' : 'YOU LOST!')
 }
 
 function showStopButton() {
@@ -81,41 +99,10 @@ function showTimerAndScore() {
   gameScore.style.visibility = 'visible'
 }
 
-function showModalWithText(text) {
-  modalText.innerText = text
-  modal.classList.remove('modal--hide')
-}
-
-function hidePopUp() {
-  modal.classList.add('modal--hide')
-}
-
 function initGame() {
   score = 0
-  field.innerHTML = ''
   gameScore.innerHTML = CARROT_COUNT
-  addItem('carrot', CARROT_COUNT, '../asset/img/carrot.png')
-  addItem('bug', BUG_COUNT, '../asset/img/bug.png')
-}
-
-function onFieldClick(event) {
-  if (!started) {
-    return
-  }
-
-  const target = event.target
-  if (target.matches('.carrot')) {
-    target.remove()
-    score++
-    playSound(carrotSound)
-    updateScoreBoard()
-
-    if (score === CARROT_COUNT) {
-      finishGame(true)
-    }
-  } else if (target.matches('.bug')) {
-    finishGame(false)
-  }
+  gameField.init()
 }
 
 function playSound(sound) {
@@ -129,29 +116,6 @@ function stopSound(sound) {
 
 function updateScoreBoard() {
   gameScore.innerHTML = CARROT_COUNT - score
-}
-
-function addItem(className, count, imgPath) {
-  const x1 = 0
-  const y1 = 0
-  const x2 = fieldRect.width - CARROT_SIZE
-  const y2 = fieldRect.height - CARROT_SIZE
-  for (let i = 0; i < count; i++) {
-    const item = document.createElement('img')
-    item.classList.add(className)
-    item.setAttribute('src', imgPath)
-    const x = randomNumber(x1, x2)
-    const y = randomNumber(y1, y2)
-    item.style.position = 'absolute'
-    item.style.left = `${x}px`
-    item.style.top = `${y}px`
-
-    field.appendChild(item)
-  }
-}
-
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min) + min)
 }
 
 function startGameTimer(time) {
