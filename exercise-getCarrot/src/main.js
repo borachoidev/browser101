@@ -1,24 +1,28 @@
 'use strict'
 import PopUp from './popup.js'
-import GameBuilder from './game.js'
+import * as sound from './sound.js'
+import { Reason, GameBuilder } from './game.js'
 
 // const CARROT_SIZE = 80
 const CARROT_COUNT = 5
 const BUG_COUNT = 5
-const GAME_DURATION_SEC = 7
+const GAME_DURATION_SEC = 2
 
 const game = new GameBuilder().gameDuration(GAME_DURATION_SEC).carrotCount(CARROT_COUNT).bugCount(BUG_COUNT).build()
 const gameFinishBanner = new PopUp()
 game.setGameStopListener((reason) => {
   let message
   switch (reason) {
-    case 'cancel':
+    case Reason.cancel:
+      sound.playAlert()
       message = 'Replay❓'
       break
-    case 'win':
+    case Reason.win:
+      sound.playWin()
       message = 'YOU WON 👍'
       break
-    case 'lose':
+    case Reason.lose:
+      sound.playBug()
       message = 'YOU LOST 🥲'
       break
     default:
